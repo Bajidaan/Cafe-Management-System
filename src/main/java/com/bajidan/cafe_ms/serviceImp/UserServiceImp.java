@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class UserServiceImp implements UserService {
 
             if(isValid(body)) {
                 User user = userRepository.findByEmail(body.get("email"));
+               // userRepository.findByEmail(body.get("email")).orElse(userRepository.save(user(body)));
                 if(Objects.isNull(user)) {
                     userRepository.save(user(body));
                     return CafeUtil.getResponse("Successfully registered", HttpStatus.OK);
