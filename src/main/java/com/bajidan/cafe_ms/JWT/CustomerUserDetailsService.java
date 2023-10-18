@@ -20,16 +20,16 @@ public class CustomerUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    private com.bajidan.cafe_ms.model.User userDetail;
+    private com.bajidan.cafe_ms.model.User user;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Inside loadByUserName {}", username);
-        userDetail = userRepository.findByEmail(username);
+        user = userRepository.findByEmail(username);
 
-        if(!Objects.isNull(userDetail)) {
-            return new User(userDetail.getEmail(), userDetail.getPassword(), new ArrayList<>());
+        if(!Objects.isNull(user)) {
+            return new User(user.getEmail(), user.getPassword(), new ArrayList<>());
         }
         else {
             throw new UsernameNotFoundException("User not found");
@@ -37,7 +37,7 @@ public class CustomerUserDetailsService implements UserDetailsService {
 
     }
 
-    public com.bajidan.cafe_ms.model.User getUserDetail() {
-        return userDetail;
+    public com.bajidan.cafe_ms.model.User getUser() {
+        return user;
     }
 }

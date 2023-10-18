@@ -8,4 +8,5 @@ import java.util.Map;
 
 public interface UserService {
     public ResponseEntity<String> saveSignUp(Map<String, String> body);
+    public ResponseEntity<String> login(Map<String, String> body);
 }

@@ -1,6 +1,7 @@
 package com.bajidan.cafe_ms.controller;
 
 import com.bajidan.cafe_ms.constants.CafeConstants;
+import com.bajidan.cafe_ms.model.User;
 import com.bajidan.cafe_ms.rest.UserRest;
 import com.bajidan.cafe_ms.serviceImp.UserServiceImp;
 import com.bajidan.cafe_ms.util.CafeUtil;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,7 +30,15 @@ public class UserController implements UserRest {
         return CafeUtil.getResponse(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+        try {
+            return userServiceImp.login(requestMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }
+
