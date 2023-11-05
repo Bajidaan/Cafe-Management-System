@@ -55,7 +55,7 @@ public class SecurityConfig {
         http
                 .cors(request -> new CorsConfiguration().applyPermitDefaultValues())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/signUp", "/user/login", "/user")
+                        .requestMatchers("/user/signUp", "/user/login", "/user/forgetPassword")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

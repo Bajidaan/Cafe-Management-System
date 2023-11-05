@@ -1,15 +1,13 @@
 package com.bajidan.cafe_ms.controller;
 
 import com.bajidan.cafe_ms.constants.CafeConstants;
-import com.bajidan.cafe_ms.model.User;
-import com.bajidan.cafe_ms.rest.UserRest;
+import com.bajidan.cafe_ms.restInterface.UserRest;
 import com.bajidan.cafe_ms.serviceImp.UserServiceImp;
 import com.bajidan.cafe_ms.util.CafeUtil;
 import com.bajidan.cafe_ms.wrapper.UserWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -55,18 +53,38 @@ public class UserController implements UserRest {
     @Override
     public ResponseEntity<String> updateStatus(Map<String, String> user) {
         try{
-
-            if(userServiceImp.updateStatus(user).equals(CafeUtil.getResponse(CafeUtil.getText(), HttpStatus.BAD_REQUEST))) {
-                return CafeUtil.getResponse(CafeUtil.getText(), HttpStatus.BAD_REQUEST);
-            }
-
-            return CafeUtil.getResponse("Successfully updated", HttpStatus.OK);
-
+            return userServiceImp.updateStatus(user);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return CafeUtil.getResponse(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return CafeUtil.getResponse();
 
+    }
+
+    @Override
+    public ResponseEntity<String> checkToken() {
+          return userServiceImp.checkToken();
+
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestBody) {
+        try {
+            return userServiceImp.changePassword(requestBody);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse();
+    }
+
+    @Override
+    public ResponseEntity<String> forgetPassword(Map<String, String> requestBody) {
+        try {
+            return userServiceImp.forgetPassword(requestBody);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse();
     }
 
 }

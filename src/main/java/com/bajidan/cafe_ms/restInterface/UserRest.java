@@ -1,8 +1,5 @@
-package com.bajidan.cafe_ms.rest;
+package com.bajidan.cafe_ms.restInterface;
 
-import com.bajidan.cafe_ms.constants.CafeConstants;
-import com.bajidan.cafe_ms.model.User;
-import com.bajidan.cafe_ms.util.CafeUtil;
 import com.bajidan.cafe_ms.wrapper.UserWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +21,19 @@ public interface UserRest {
     public ResponseEntity<String> login(@RequestBody Map<String, String> requestMap);
 
     @GetMapping("/get")
-    public ResponseEntity<List<UserWrapper>> getAllUser();
+    ResponseEntity<List<UserWrapper>> getAllUser();
     @PostMapping("/updateStatus")
-    public ResponseEntity<String> updateStatus(@RequestBody Map<String, String> user);
+    ResponseEntity<String> updateStatus(@RequestBody Map<String, String> user);
+
+    @GetMapping("/checkToken")
+   ResponseEntity<String> checkToken();
+
+    @PostMapping("/changePassword")
+    ResponseEntity<String> changePassword(@RequestBody Map<String, String> requestBody);
+
+    @PostMapping("/forgetPassword")
+    ResponseEntity<String> forgetPassword(@RequestBody Map<String, String> requestBody);
+
+
+
 }

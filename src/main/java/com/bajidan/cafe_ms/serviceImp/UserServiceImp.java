@@ -6,10 +6,11 @@ import com.bajidan.cafe_ms.JWT.JwtUtil;
 import com.bajidan.cafe_ms.constants.CafeConstants;
 import com.bajidan.cafe_ms.model.User;
 import com.bajidan.cafe_ms.repository.UserRepository;
-import com.bajidan.cafe_ms.service.UserService;
+import com.bajidan.cafe_ms.serviceInterface.UserService;
 import com.bajidan.cafe_ms.util.CafeUtil;
 import com.bajidan.cafe_ms.util.EmailUtil;
 import com.bajidan.cafe_ms.wrapper.UserWrapper;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,6 @@ public class UserServiceImp implements UserService {
     public ResponseEntity<String> saveSignUp(Map<String, String> body) {
         log.info("Inside signup {}", body);
         try {
-
             if(isValid(body)) {
                 User user = userRepository.findByEmail(body.get("email"));
                // userRepository.findByEmail(body.get("email")).orElse(userRepository.save(user(body)));
@@ -126,12 +126,73 @@ public class UserServiceImp implements UserService {
                 }
 
             } else {
-                return CafeUtil.getResponse(CafeConstants.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
+                return CafeUtil.getResponse(CafeConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return CafeUtil.getResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> checkToken() {
+        try {
+            return new ResponseEntity<>("true", HttpStatus.OK);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestBody) {
+
+        try {
+
+            User user = userRepository.findByEmail(jwtFilter.getCurrentUsername());
+
+            if (!user.equals(null)) {
+                if(user.getPassword().equals(requestBody.get("oldPassword"))) {
+                    user.setPassword(requestBody.get("newPassword"));
+                    userRepository.save(user);
+                    return CafeUtil.getResponse("Password updated successfully", HttpStatus.OK);
+                }
+
+                return CafeUtil.getResponse("Wrong Password", HttpStatus.BAD_REQUEST);
+            }
+
+            return CafeUtil.getResponse();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse();
+    }
+
+    @Override
+    public ResponseEntity<String> forgetPassword(Map<String, String> requestBody) {
+        try {
+            User user = userRepository.findByEmail(requestBody.get("email"));
+
+            if(!Objects.isNull(user) && !Strings.isNullOrEmpty(user.getEmail())) {
+                emailUtil.forgetPassword(user.getEmail(), "Password recovery", user.getPassword());
+
+                return CafeUtil.getResponse("Check your email for credentials", HttpStatus.OK);
+            }
+
+            return CafeUtil.getResponse("User not found", HttpStatus.NOT_FOUND);
+
+//            if(user != null) {
+//                emailUtil.sendSimpleMessage(user.getEmail(), "Password Recovery",
+//                        "Password: " + user.getPassword());
+//                return CafeUtil.getResponse("Email sent successfully", HttpStatus.OK);
+//            }
+// return CafeUtil.getResponse("email does not exist", HttpStatus.BAD_REQUEST);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return CafeUtil.getResponse();
     }
 
 
